@@ -103,7 +103,9 @@
                     <summary>@timeText</summary>
                     @foreach (var role in requirement.Roles)
                     {
-                        <span class="mx-3">@role (@GetTime([role]) h)</span>
+                        var roleTime = $"{GetTime([role]).TotalHours:F1}";
+                        <span class="mx-3">@role (@roleTime h)</span>
+                        <br/>
                     }
                 </details>
             }
