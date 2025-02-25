@@ -96,14 +96,14 @@
         {
             var time = GetTime(requirement.Roles);
             var symbol = time >= requirement.Time ? "✔️" : "❌";
-            var timeText = $"{symbol} {requirement.Name} ({time.TotalHours:F1} / {requirement.Time.TotalHours:F0})";
+            var timeText = $"{symbol} {requirement.Name} ({(int) time.TotalHours} / {(int) requirement.Time.TotalHours})";
             if (requirement.Roles.Length > 0)
             {
                 <details class="mx-3">
                     <summary>@timeText</summary>
                     @foreach (var role in requirement.Roles.OrderByDescending(r => GetTime([r])))
                     {
-                        var roleTime = $"{GetTime([role]).TotalHours:F1}";
+                        var roleTime = $"{(int) GetTime([role]).TotalHours}";
                         var roleName = role.Replace("CMJob", string.Empty);
                         <span class="mx-3">@roleTime h @roleName</span>
                         <br/>
