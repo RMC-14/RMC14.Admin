@@ -74,6 +74,47 @@
 </div>
 
 <div class="container">
+    <h2>Role whitelists</h2>
+    @{
+        var sl = "CMJobSquadLeader";
+        var squad = new[] { "CMJobRifleman", "CMJobCombatTech", "CMJobHospitalCorpsman", "CMJobSmartGunOperator", "CMJobWeaponsSpecialist", "CMJobFireteamLeader", sl };
+        var engi = new[] { "CMJobCombatTech", "CMJobMaintTech", "CMJobOrdnanceTech", "CMJobChiefEngineer" };
+        var warden = "CMJobMilitaryWarden";
+        var cmp = "CMJobChiefMP";
+        var mp = new[] { "CMJobMilitaryPolice", warden, cmp };
+        var medical = new[] { "CMJobHospitalCorpsman", "CMJobNurse", "CMJobDoctor", "CMJobResearcher", "CMJobCMO" };
+        var xo = "CMJobExecutiveOfficer";
+        var command = new[] { "CMJobStaffOfficer", xo, "CMJobCommandingOfficer" };
+        var req = new[] { "CMJobCargoTech", "CMJobQuartermaster" };
+        string GetTime(string name, TimeSpan required, params string[] roles)
+        {
+            var time = Model.PlayTimes.Where(t => roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
+            var symbol = time >= required ? "✔️" : "❌";
+            return $"{symbol} {name} ({time.TotalHours:F1} / {required.TotalHours:F0})";
+        }
+
+        <h3>Senior Enlisted Advisor Requirements</h3>
+        @GetTime("Squad", TimeSpan.FromHours(15), squad)
+        @GetTime("Engineering", TimeSpan.FromHours(10), engi)
+        @GetTime("Military Police", TimeSpan.FromHours(15), mp)
+        @GetTime("Medical", TimeSpan.FromHours(15), medical)
+        @GetTime("Command", TimeSpan.FromHours(15), command)
+        @GetTime("Requisitions", TimeSpan.FromHours(10), req)
+
+        <h3>Commanding Officer Requirements</h3>
+        @GetTime("Squad", TimeSpan.FromHours(35), squad)
+        @GetTime("Squad Leader", TimeSpan.FromHours(15), sl)
+        @GetTime("Engineering", TimeSpan.FromHours(10), engi)
+        @GetTime("Military Police", TimeSpan.FromHours(30), mp)
+        @GetTime("Warden", TimeSpan.FromHours(10), warden)
+        @GetTime("Chief MP", TimeSpan.FromHours(10), cmp)
+        @GetTime("Medical", TimeSpan.FromHours(10), medical)
+        @GetTime("Command", TimeSpan.FromHours(20), command)
+        @GetTime("Executive Officer", TimeSpan.FromHours(30), xo)
+    }
+</div>
+
+<div class="container">
     <h2>Character profiles</h2>
 
     <table class="table table-striped mt-3">
