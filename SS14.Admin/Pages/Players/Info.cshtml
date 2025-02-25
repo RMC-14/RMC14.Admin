@@ -104,7 +104,8 @@
                     @foreach (var role in requirement.Roles)
                     {
                         var roleTime = $"{GetTime([role]).TotalHours:F1}";
-                        <span class="mx-3">@role (@roleTime h)</span>
+                        var roleName = role.Replace("CMJob", string.Empty);
+                        <span class="mx-3">@roleTime h @roleName</span>
                         <br/>
                     }
                 </details>
