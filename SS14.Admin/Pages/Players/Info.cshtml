@@ -101,7 +101,7 @@
             {
                 <details class="mx-3">
                     <summary>@timeText</summary>
-                    @foreach (var role in requirement.Roles)
+                    @foreach (var role in requirement.Roles.OrderByDescending(r => GetTime([r])))
                     {
                         var roleTime = $"{GetTime([role]).TotalHours:F1}";
                         var roleName = role.Replace("CMJob", string.Empty);
