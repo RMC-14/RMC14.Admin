@@ -92,11 +92,27 @@
             return Model.PlayTimes.Where(t => requirement.Roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
         }
 
-        string GetTimeString(RoleWhitelistRequirement requirement)
+        void GetTimeHtml(RoleWhitelistRequirement requirement)
         {
             var time = GetTime(requirement);
             var symbol = time >= requirement.Time ? "✔️" : "❌";
-            return $"{symbol} {requirement.Name} ({time.TotalHours:F1} / {requirement.Time.TotalHours:F0})";
+            var timeText = $"{symbol} {requirement.Name} ({time.TotalHours:F1} / {requirement.Time.TotalHours:F0})";
+            if (requirement.Roles.Length > 0)
+            {
+                <details class="mx-3">
+                    <summary>@timeText</summary>
+                    @foreach (var role in requirement.Roles)
+                    {
+                        <span class="mx-3">@role</span>
+                    }
+                </details>
+            }
+            else
+            {
+                <span class="mx-3">@timeText</span>
+            }
+
+            <br/>
         }
 
         string AllMetSymbol(List<RoleWhitelistRequirement> requirements)
@@ -113,18 +129,18 @@
             new("Command", TimeSpan.FromHours(15), command),
             new("Requisitions", TimeSpan.FromHours(10), req)
         };
-        <details>
+        <details class="mb-1">
             <summary>@AllMetSymbol(sea) Senior Enlisted Advisor Requirements</summary>
-            @foreach (var timer in sea.Select(GetTimeString))
+            @foreach (var timer in sea)
             {
-                @timer
-                <br/>
+                GetTimeHtml(timer);
             }
         </details>
 
         var co = new List<RoleWhitelistRequirement>
         {
             new("Squad", TimeSpan.FromHours(35), squad),
+            new("Squad Leader", TimeSpan.FromHours(15), [sl]),
             new("Engineering", TimeSpan.FromHours(10), engi),
             new("Military Police", TimeSpan.FromHours(30), mp),
             new("Warden", TimeSpan.FromHours(10), [warden]),
@@ -132,13 +148,13 @@
             new("Medical", TimeSpan.FromHours(10), medical),
             new("Command", TimeSpan.FromHours(20), command),
             new("Executive Officer", TimeSpan.FromHours(30), [xo]),
+            new("Requisitions", TimeSpan.FromHours(5), req),
         };
         <details>
             <summary>@AllMetSymbol(co) Commanding Officer Requirements</summary>
-            @foreach (var timer in co.Select(GetTimeString))
+            @foreach (var timer in co)
             {
-                @timer
-                <br/>
+                GetTimeHtml(timer);
             }
         </details>
     }
