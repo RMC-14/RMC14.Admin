@@ -99,3 +99,5 @@ public sealed class Info : PageModel
         }
     }
 }
+
+public readonly record struct RoleWhitelistRequirement(string Name, TimeSpan Time, string[] Roles);

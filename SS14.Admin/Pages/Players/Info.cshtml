@@ -86,44 +86,61 @@
         var xo = "CMJobExecutiveOfficer";
         var command = new[] { "CMJobStaffOfficer", xo, "CMJobCommandingOfficer" };
         var req = new[] { "CMJobCargoTech", "CMJobQuartermaster" };
-        string GetTime(string name, TimeSpan required, params string[] roles)
+
+        TimeSpan GetTime(RoleWhitelistRequirement requirement)
         {
-            var time = Model.PlayTimes.Where(t => roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
-            var symbol = time >= required ? "✔️" : "❌";
-            return $"{symbol} {name} ({time.TotalHours:F1} / {required.TotalHours:F0})";
+            return Model.PlayTimes.Where(t => requirement.Roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
         }
 
-        <h3>Senior Enlisted Advisor Requirements</h3>
-        @GetTime("Squad", TimeSpan.FromHours(15), squad)
-        <br/>
-        @GetTime("Engineering", TimeSpan.FromHours(10), engi)
-        <br/>
-        @GetTime("Military Police", TimeSpan.FromHours(15), mp)
-        <br/>
-        @GetTime("Medical", TimeSpan.FromHours(15), medical)
-        <br/>
-        @GetTime("Command", TimeSpan.FromHours(15), command)
-        <br/>
-        @GetTime("Requisitions", TimeSpan.FromHours(10), req)
+        string GetTimeString(RoleWhitelistRequirement requirement)
+        {
+            var time = GetTime(requirement);
+            var symbol = time >= requirement.Time ? "✔️" : "❌";
+            return $"{symbol} {requirement.Name} ({time.TotalHours:F1} / {requirement.Time.TotalHours:F0})";
+        }
 
-        <h3>Commanding Officer Requirements</h3>
-        @GetTime("Squad", TimeSpan.FromHours(35), squad)
-        <br/>
-        @GetTime("Squad Leader", TimeSpan.FromHours(15), sl)
-        <br/>
-        @GetTime("Engineering", TimeSpan.FromHours(10), engi)
-        <br/>
-        @GetTime("Military Police", TimeSpan.FromHours(30), mp)
-        <br/>
-        @GetTime("Warden", TimeSpan.FromHours(10), warden)
-        <br/>
-        @GetTime("Chief MP", TimeSpan.FromHours(10), cmp)
-        <br/>
-        @GetTime("Medical", TimeSpan.FromHours(10), medical)
-        <br/>
-        @GetTime("Command", TimeSpan.FromHours(20), command)
-        <br/>
-        @GetTime("Executive Officer", TimeSpan.FromHours(30), xo)
+        string AllMetSymbol(List<RoleWhitelistRequirement> requirements)
+        {
+            return requirements.All(requirement => GetTime(requirement) > requirement.Time) ? "✔️" : "❌";
+        }
+
+        var sea = new List<RoleWhitelistRequirement>
+        {
+            new("Squad", TimeSpan.FromHours(15), squad),
+            new("Engineering", TimeSpan.FromHours(10), engi),
+            new("Military Police", TimeSpan.FromHours(15), mp),
+            new("Medical", TimeSpan.FromHours(15), medical),
+            new("Command", TimeSpan.FromHours(15), command),
+            new("Requisitions", TimeSpan.FromHours(10), req)
+        };
+        <details>
+            <summary>Senior Enlisted Advisor Requirements @AllMetSymbol(sea)</summary>
+            @foreach (var timer in sea.Select(GetTimeString))
+            {
+                @timer
+                <br/>
+            }
+        </details>
+
+        var co = new List<RoleWhitelistRequirement>
+        {
+            new("Squad", TimeSpan.FromHours(35), squad),
+            new("Engineering", TimeSpan.FromHours(10), engi),
+            new("Military Police", TimeSpan.FromHours(30), mp),
+            new("Warden", TimeSpan.FromHours(10), [warden]),
+            new("Chief MP", TimeSpan.FromHours(10), [cmp]),
+            new("Medical", TimeSpan.FromHours(10), medical),
+            new("Command", TimeSpan.FromHours(20), command),
+            new("Executive Officer", TimeSpan.FromHours(30), [xo]),
+        };
+        <details>
+            <summary>Commanding Officer Requirements @AllMetSymbol(co)</summary>
+            @foreach (var timer in co.Select(GetTimeString))
+            {
+                @timer
+                <br/>
+            }
+        </details>
     }
 </div>
 
