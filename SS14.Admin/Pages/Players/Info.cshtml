@@ -114,7 +114,7 @@
             new("Requisitions", TimeSpan.FromHours(10), req)
         };
         <details>
-            <summary>Senior Enlisted Advisor Requirements @AllMetSymbol(sea)</summary>
+            <summary>@AllMetSymbol(sea) Senior Enlisted Advisor Requirements</summary>
             @foreach (var timer in sea.Select(GetTimeString))
             {
                 @timer
@@ -134,7 +134,7 @@
             new("Executive Officer", TimeSpan.FromHours(30), [xo]),
         };
         <details>
-            <summary>Commanding Officer Requirements @AllMetSymbol(co)</summary>
+            <summary>@AllMetSymbol(co) Commanding Officer Requirements</summary>
             @foreach (var timer in co.Select(GetTimeString))
             {
                 @timer
