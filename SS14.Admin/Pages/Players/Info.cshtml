@@ -87,14 +87,14 @@
         var command = new[] { "CMJobStaffOfficer", xo, "CMJobCommandingOfficer" };
         var req = new[] { "CMJobCargoTech", "CMJobQuartermaster" };
 
-        TimeSpan GetTime(RoleWhitelistRequirement requirement)
+        TimeSpan GetTime(string[] roles)
         {
-            return Model.PlayTimes.Where(t => requirement.Roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
+            return Model.PlayTimes.Where(t => roles.Contains(t.Tracker)).Aggregate(TimeSpan.Zero, (a, b) => a + b.TimeSpent);
         }
 
         void GetTimeHtml(RoleWhitelistRequirement requirement)
         {
-            var time = GetTime(requirement);
+            var time = GetTime(requirement.Roles);
             var symbol = time >= requirement.Time ? "✔️" : "❌";
             var timeText = $"{symbol} {requirement.Name} ({time.TotalHours:F1} / {requirement.Time.TotalHours:F0})";
             if (requirement.Roles.Length > 0)
@@ -103,7 +103,7 @@
                     <summary>@timeText</summary>
                     @foreach (var role in requirement.Roles)
                     {
-                        <span class="mx-3">@role</span>
+                        <span class="mx-3">@role (@GetTime([role]) h)</span>
                     }
                 </details>
             }
@@ -111,13 +111,11 @@
             {
                 <span class="mx-3">@timeText</span>
             }
-
-            <br/>
         }
 
         string AllMetSymbol(List<RoleWhitelistRequirement> requirements)
         {
-            return requirements.All(requirement => GetTime(requirement) > requirement.Time) ? "✔️" : "❌";
+            return requirements.All(requirement => GetTime(requirement.Roles) > requirement.Time) ? "✔️" : "❌";
         }
 
         var sea = new List<RoleWhitelistRequirement>
