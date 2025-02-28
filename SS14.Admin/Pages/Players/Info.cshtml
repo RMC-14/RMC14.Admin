@@ -99,20 +99,20 @@
             var timeText = $"{symbol} {requirement.Name} ({(int) time.TotalHours} / {(int) requirement.Time.TotalHours})";
             if (requirement.Roles.Length > 0)
             {
-                <details class="mx-3">
+                <details class="ms-3">
                     <summary>@timeText</summary>
                     @foreach (var role in requirement.Roles.OrderByDescending(r => GetTime([r])))
                     {
                         var roleTime = $"{(int) GetTime([role]).TotalHours}";
                         var roleName = role.Replace("CMJob", string.Empty);
-                        <span class="mx-3">@roleTime h @roleName</span>
+                        <span class="ms-3">@roleTime h @roleName</span>
                         <br/>
                     }
                 </details>
             }
             else
             {
-                <span class="mx-3">@timeText</span>
+                <span class="ms-3">@timeText</span>
             }
         }
 
